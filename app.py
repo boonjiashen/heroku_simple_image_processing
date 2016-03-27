@@ -7,9 +7,13 @@ import os
 from flask import Flask, render_template, request, redirect, url_for, send_from_directory
 from werkzeug import secure_filename
 import scipy.misc, numpy
+import Mosaicker
 
 # Initialize the Flask application
 app = Flask(__name__)
+max_dim = 500  # max dimension of both height and width of output image
+               # overly large input images will be shrunk
+mosaicker = Mosaicker.AppMosaicker(max_dim)
 
 # This is the path to the upload directory
 app.config['UPLOAD_FOLDER'] = 'uploads/'
@@ -48,7 +52,8 @@ def upload():
         im = file_to_numpy_image(file)
 
         # Save flipped image in upload folder
-        im = numpy.fliplr(im)
+        #im = numpy.fliplr(im)
+        im = mosaicker.compute_mosaick(im)
         fullpath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         scipy.misc.imsave(fullpath, im)
 
