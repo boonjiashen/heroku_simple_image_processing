@@ -6,6 +6,7 @@ import os
 # browser the file that the user just uploaded
 from flask import Flask, render_template, request, redirect, url_for, send_from_directory
 from werkzeug import secure_filename
+import scipy.ndimage, numpy
 
 # Initialize the Flask application
 app = Flask(__name__)
@@ -27,6 +28,12 @@ def allowed_file(filename):
 def index():
     return render_template('index.html')
 
+def file_to_numpy_image(file):
+    filename = '/tmp/tmp_file'
+    file.save(filename)
+    im = scipy.misc.imread(filename)
+    return im
+
 
 # Route that will process the file upload
 @app.route('/upload', methods=['POST'])
@@ -37,9 +44,15 @@ def upload():
     if file and allowed_file(file.filename):
         # Make the filename safe, remove unsupported chars
         filename = secure_filename(file.filename)
-        # Move the file form the temporal folder to
-        # the upload folder we setup
-        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
+        # Convert to numpy image
+        im = file_to_numpy_image(file)
+
+        # Save flipped image in upload folder
+        im = numpy.fliplr(im)
+        fullpath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        scipy.misc.imsave(fullpath, im)
+
         # Redirect the user to the uploaded_file route, which
         # will basicaly show on the browser the uploaded file
         return redirect(url_for('uploaded_file',
