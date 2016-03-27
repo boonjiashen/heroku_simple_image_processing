@@ -1,7 +1,6 @@
 import scipy.spatial
 import scipy.misc
 import numpy as np
-import matplotlib.pyplot as plt
 import util
 
 def unpickle(filename):
@@ -37,8 +36,8 @@ class Mosaicker(object):
 
         src_height, src_width, n_channels = im_input.shape
         assert(n_channels == 3)
-        assert(src_height % 3 == 0)
-        assert(src_width % 3 == 0)
+        assert(src_height % self.tile_size == 0)
+        assert(src_width % self.tile_size == 0)
 
         windows, slice_tuples = zip(
                 *util.yield_windows(im_input, 
@@ -97,19 +96,32 @@ def shrink_to_max_dim(input_image, max_dim):
     scale = float(max_dim) / max(height, width)
     return scipy.misc.imresize(input_image, scale)
 
+
+class AppMosaicker(Mosaicker):
+    """Default Mosaicker for Flask app"""
+
+    def __init__(self, max_dim=500):
+        """`max_size` of output image"""
+
+        self.max_dim = max_dim  
+        candidates = get_default_candidates()[::3,::3,:,:]
+        Mosaicker.__init__(self, candidates)
+
+    def compute_mosaick(self, input_image):
+
+        input_image = shrink_to_max_dim(input_image, self.max_dim)
+        input_image = crop_to_a_multiple(input_image, self.tile_size)
+        output_image = Mosaicker.compute_mosaick(self, input_image)
+
+        return output_image
+
+
 if __name__ == "__main__":
+    import matplotlib.pyplot as plt
 
-    max_dim = 500
-
-    candidates = get_default_candidates()[::3,::3,:,:]
-    mosaicker = Mosaicker(candidates)
+    mosaicker = AppMosaicker(500)
     im_original = scipy.misc.imread('/Users/jiashen/Downloads/sunset.jpg')
-    input_image = im_original
-
-    input_image = shrink_to_max_dim(input_image, max_dim)
-    input_image = crop_to_a_multiple(input_image, mosaicker.tile_size)
-    print('input image size is ', input_image.shape)
-    output_image = mosaicker.compute_mosaick(input_image)
+    output_image = mosaicker.compute_mosaick(im_original)
 
     plt.figure()
     plt.imshow(output_image)
