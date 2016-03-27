@@ -6,7 +6,7 @@ import os
 # browser the file that the user just uploaded
 from flask import Flask, render_template, request, redirect, url_for, send_from_directory
 from werkzeug import secure_filename
-import scipy.ndimage, numpy
+import scipy.misc, numpy
 
 # Initialize the Flask application
 app = Flask(__name__)
