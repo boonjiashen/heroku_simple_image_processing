@@ -13,7 +13,10 @@ import Mosaicker
 app = Flask(__name__)
 max_dim = 500  # max dimension of both height and width of output image
                # overly large input images will be shrunk
-mosaicker = Mosaicker.AppMosaicker(max_dim)
+mosaicker = Mosaicker.AppMosaicker(
+        'static/data_batch_1',
+        max_dim=max_dim,
+        )
 
 # This is the path to the upload directory
 app.config['UPLOAD_FOLDER'] = 'uploads/'

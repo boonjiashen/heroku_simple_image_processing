@@ -55,10 +55,9 @@ class Mosaicker(object):
         return im_output
 
 
-def get_default_candidates():
+def get_default_candidates(filename):
     """Returns an 11x11x3x10000 matrix of candidate tiles"""
 
-    filename = '/Users/jiashen/Downloads/cifar-10-batches-py/data_batch_1'
     all_candidates = unpickle(filename)['data'].T
     all_candidates = all_candidates.reshape([32, 32, 3, -1], order='F')
     all_candidates = all_candidates.transpose([1, 0, 2, 3])
@@ -100,11 +99,11 @@ def shrink_to_max_dim(input_image, max_dim):
 class AppMosaicker(Mosaicker):
     """Default Mosaicker for Flask app"""
 
-    def __init__(self, max_dim=500):
+    def __init__(self, mat_filename, max_dim=500):
         """`max_size` of output image"""
 
         self.max_dim = max_dim  
-        candidates = get_default_candidates()[::3,::3,:,:]
+        candidates = get_default_candidates(mat_filename)[::3,::3,:,:]
         Mosaicker.__init__(self, candidates)
 
     def compute_mosaick(self, input_image):
