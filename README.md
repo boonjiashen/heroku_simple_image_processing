@@ -14,8 +14,7 @@ Heroku toolbelt
 
 #How to run
 
-    >> heroku create --buildpack https://github.com/thenovices/heroku-buildpack-scipy
-    >> git push heroku master
+    >> . run_remotely.sh
 
 #Notes
 

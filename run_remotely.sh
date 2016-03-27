@@ -1,3 +1,2 @@
-heroku create
-heroku buildpacks:set https://github.com/kennethreitz/conda-buildpack
+heroku create --buildpack https://github.com/thenovices/heroku-buildpack-scipy
 git push heroku master
