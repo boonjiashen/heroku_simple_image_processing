@@ -21,7 +21,7 @@ Heroku toolbelt
 Useful repos: [Conda
 buildpack](https://github.com/kennethreitz/conda-buildpack),
 [Example use of Conda
-buildpack](https://github.com/arose13/HerokuCondaScipyFlaskApp)
+buildpack](https://github.com/arose13/HerokuCondaScipyFlaskApp), [File uploader](http://code.runnable.com/UiPcaBXaxGNYAAAL/how-to-upload-a-file-to-the-server-in-flask-for-python)
 
 We need the pillow package in conda requirements to enable scipy's imread
 functionality. Without it, scipy.ndimage.imread throws an import error (haven't
