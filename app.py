@@ -14,7 +14,7 @@ app = Flask(__name__)
 # This is the path to the upload directory
 app.config['UPLOAD_FOLDER'] = 'uploads/'
 # These are the extension that we are accepting to be uploaded
-app.config['ALLOWED_EXTENSIONS'] = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
+app.config['ALLOWED_EXTENSIONS'] = set(['png', 'jpg', 'jpeg'])
 
 # For a given file, return whether it's an allowed type or not
 def allowed_file(filename):
@@ -33,7 +33,6 @@ def file_to_numpy_image(file):
     file.save(filename)
     im = scipy.misc.imread(filename)
     return im
-
 
 # Route that will process the file upload
 @app.route('/upload', methods=['POST'])
@@ -71,4 +70,5 @@ if __name__ == '__main__':
     app.run(
         host="0.0.0.0",
         port=5000,
+        debug=True,
     )
