@@ -82,10 +82,6 @@ def yield_windows(image, window_size, step_size, yield_bb=False):
     `window_size` - required (height, width) of window
 
     `step_size` - (vertical_step, horizontal_step) 2-ple
-
-    `yield_bb' - yields the bounding box of the window if True, i.e., yields a
-    (window, (xTL, yTL, xBR, yBR)) tuple, where TL and BR are top-left and
-    bottom-right of the window.
     """
 
     im_height, im_width = image.shape[:2]
@@ -100,18 +96,12 @@ def yield_windows(image, window_size, step_size, yield_bb=False):
 
     for y_TL in range(0, max_y_TL + 1, y_step):
         for x_TL in range(0, max_x_TL + 1, x_step):
-            window = image[
-                    y_TL:y_TL + win_height,
-                    x_TL:x_TL + win_width]
+            slices = (slice(y_TL, y_TL + win_height),
+                    slice(x_TL, x_TL + win_width),
+                    slice(None))
+            window = image[slices]
 
-            # Yield both the window and its coordinates
-            if yield_bb:
-                bb = (x_TL, y_TL, x_TL + win_width - 1, y_TL + win_height - 1)
-                yield window, bb
-
-            # Yield window only
-            else:
-                yield window
+            yield window, slices
 
 
 def get_windowfier(win_size, step_size=None):
