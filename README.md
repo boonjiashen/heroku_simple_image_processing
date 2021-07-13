@@ -1,22 +1,22 @@
-#What
+# What
 
 Simple image processing Heroku app. This app returns a flipped image of the
 user's uploaded image.
 
-#Why
+# Why
 
 Skeleton code for scipy and numpy. With these two libraries a whole host of
 image processing features can be enabled on the server side.
 
-#Pre-requisites
+# Pre-requisites
 
 Heroku toolbelt
 
-#How to run
+# How to run
 
     >> . run_remotely.sh
 
-#Notes
+# Notes
 
 Useful repos: [Scipy
 buildpack](https://github.com/thenovices/heroku-buildpack-scipy), [Conda
