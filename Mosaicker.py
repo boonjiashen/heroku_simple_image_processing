@@ -3,6 +3,7 @@ import numpy as np
 import util
 import skimage.transform
 
+
 def unpickle(filename):
     import pickle
     fo = open(filename, 'rb')
@@ -95,7 +96,13 @@ def shrink_to_max_dim(input_image, max_dim):
         return input_image
 
     scale = float(max_dim) / max(height, width)
-    return skimage.transform.rescale(input_image, scale).astype(input_image.dtype)
+    size = [int(scale * x) for x in [height, width]]
+
+    output_image = skimage.transform.resize(input_image, size)
+
+    # Scaling back to uint8 because skimage resize returns float64 pixel values between 0 and 1
+    scaled_image = (255 * output_image).astype(np.uint8)
+    return scaled_image
 
 
 class AppMosaicker(Mosaicker):
@@ -109,7 +116,6 @@ class AppMosaicker(Mosaicker):
         Mosaicker.__init__(self, candidates)
 
     def compute_mosaick(self, input_image):
-
         input_image = shrink_to_max_dim(input_image, self.max_dim)
         input_image = crop_to_a_multiple(input_image, self.tile_size)
         output_image = Mosaicker.compute_mosaick(self, input_image)
@@ -120,10 +126,16 @@ class AppMosaicker(Mosaicker):
 if __name__ == "__main__":
     import matplotlib.pyplot as plt
 
-    mosaicker = AppMosaicker(500)
-    im_original = matplotlib.pyplot.imread('/Users/jiashen/Downloads/sunset.jpg')
+    mosaicker = AppMosaicker(
+        'static/data_batch_1',
+    )
+    filename = "/Users/jiashen/Downloads/keys/NINTCHDBPICT000628370196.jpeg"
+    im_original = plt.imread(filename)
     output_image = mosaicker.compute_mosaick(im_original)
 
-    plt.figure()
+    fig = plt.figure()
+    fig.add_subplot(121)
+    plt.imshow(im_original)
+    fig.add_subplot(122)
     plt.imshow(output_image)
     plt.show()

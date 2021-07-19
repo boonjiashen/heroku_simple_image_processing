@@ -6,7 +6,6 @@ import os
 # browser the file that the user just uploaded
 from flask import Flask, render_template, request, redirect, url_for, send_from_directory
 from werkzeug.utils import secure_filename
-import scipy.misc, numpy
 import matplotlib.pyplot
 import Mosaicker
 
