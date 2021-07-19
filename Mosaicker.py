@@ -1,12 +1,14 @@
 import scipy.spatial
-import scipy.misc
 import numpy as np
 import util
+import skimage.transform
 
 def unpickle(filename):
-    import cPickle
+    import pickle
     fo = open(filename, 'rb')
-    dictionary = cPickle.load(fo)
+    # Using encoding='latin1' is required for unpickling NumPy arrays
+    # https://docs.python.org/3/library/pickle.html#pickle.Unpickler
+    dictionary = pickle.load(fo, encoding='latin1')
     fo.close()
     return dictionary
 
@@ -35,7 +37,7 @@ class Mosaicker(object):
         """
 
         src_height, src_width, n_channels = im_input.shape
-        assert(n_channels == 3)
+        assert n_channels == 3, f"Image should have 3 channels but was {n_channels}"
         assert(src_height % self.tile_size == 0)
         assert(src_width % self.tile_size == 0)
 
@@ -93,7 +95,7 @@ def shrink_to_max_dim(input_image, max_dim):
         return input_image
 
     scale = float(max_dim) / max(height, width)
-    return scipy.misc.imresize(input_image, scale)
+    return skimage.transform.rescale(input_image, scale).astype(input_image.dtype)
 
 
 class AppMosaicker(Mosaicker):
@@ -119,7 +121,7 @@ if __name__ == "__main__":
     import matplotlib.pyplot as plt
 
     mosaicker = AppMosaicker(500)
-    im_original = scipy.misc.imread('/Users/jiashen/Downloads/sunset.jpg')
+    im_original = matplotlib.pyplot.imread('/Users/jiashen/Downloads/sunset.jpg')
     output_image = mosaicker.compute_mosaick(im_original)
 
     plt.figure()

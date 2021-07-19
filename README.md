@@ -12,7 +12,15 @@ image processing features can be enabled on the server side.
 
 Heroku toolbelt
 
-# How to run
+# How to run locally
+
+```bash
+pip install -r requirements.txt
+export FLASK_ENV=development
+flask run
+```
+
+# How to deploy
 
     >> . run_remotely.sh
 
