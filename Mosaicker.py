@@ -13,6 +13,7 @@ def unpickle(filename):
     fo.close()
     return dictionary
 
+
 class Mosaicker(object):
 
     def __init__(self, candidates):
@@ -28,7 +29,6 @@ class Mosaicker(object):
 
         self.X = np.vstack(candidates[:,:,:,i].flatten() for i in range(self.n))
         self.tree = scipy.spatial.cKDTree(self.X)
-
 
     def compute_mosaick(self, im_input):
         """Returns the photographic mosaick of the input
@@ -66,6 +66,7 @@ def get_default_candidates(filename):
     all_candidates = all_candidates.transpose([1, 0, 2, 3])
 
     return all_candidates
+
 
 def crop_to_a_multiple(input_image, step):
     """Returns a crop of a 3D or 2D image such that both height and width are
