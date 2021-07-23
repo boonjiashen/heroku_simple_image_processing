@@ -1,3 +1,4 @@
-* Move from Heroku to AWS, maybe a Lambda function
-* Make Heroku app deploy straight from github, at least easy to address some security vulnerabilities
 * Fix "entity too large" when submitted from phone 
+* Put infra (elastic beanstalk resource, code pipelines) in code
+* Add unit tests
+* Add instructions on how to use + image limits in UI
