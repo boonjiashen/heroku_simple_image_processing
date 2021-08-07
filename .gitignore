@@ -1,5 +1,6 @@
 uploads
 .idea
+*.iml
 
 # Elastic Beanstalk Files
 .elasticbeanstalk/*
