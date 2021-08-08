@@ -106,6 +106,23 @@ def shrink_to_max_dim(input_image, max_dim):
     return scaled_image
 
 
+def normalize(im: np.ndarray) -> np.ndarray:
+    """Drops alpha channel if there's one, converts to uint8
+    """
+    if np.issubdtype(im.dtype, np.floating):
+        im = (255 * im).astype(np.uint8)
+
+    num_channels = im.shape[2]
+    assert num_channels in (3, 4)
+    if num_channels == 4:
+        # Replace transparent pixels with white
+        # See https://stackoverflow.com/a/53737420
+        im, alpha = im[:, :, :3], im[:, :, 3]
+        im[alpha == 0] = [255, 255, 255]
+
+    return im
+
+
 class AppMosaicker(Mosaicker):
     """Default Mosaicker for Flask app"""
 
@@ -117,6 +134,7 @@ class AppMosaicker(Mosaicker):
         Mosaicker.__init__(self, candidates)
 
     def compute_mosaick(self, input_image):
+        input_image = normalize(input_image)
         input_image = shrink_to_max_dim(input_image, self.max_dim)
         input_image = crop_to_a_multiple(input_image, self.tile_size)
         output_image = Mosaicker.compute_mosaick(self, input_image)

@@ -4,6 +4,8 @@ import os
 # will be used to redirect the user once the upload is done
 # and send_from_directory will help us to send/show on the
 # browser the file that the user just uploaded
+import numpy as np
+import werkzeug
 from flask import Flask, render_template, request, redirect, url_for, send_from_directory
 from werkzeug.utils import secure_filename
 import matplotlib.pyplot
@@ -38,10 +40,21 @@ def index():
     return render_template('index.html')
 
 
-def file_to_numpy_image(file):
+def file_to_numpy_image(file: werkzeug.datastructures.FileStorage):
+    # print(type(file))
     filename = '/tmp/tmp_file'
     file.save(filename)
     im = matplotlib.pyplot.imread(filename)
+
+    # matplotlib.pyplot.imsave('/tmp/1', im[:, :, 0])
+    # matplotlib.pyplot.imsave('/tmp/2', im[:, :, 1])
+    # matplotlib.pyplot.imsave('/tmp/3', im[:, :, 2])
+    # matplotlib.pyplot.imsave('/tmp/4', im[:, :, 3])
+    # print('jiashenb', im.shape)
+    # print(file.read())
+    # print('jiashenb', (np.fromstring(file.read(), np.uint8)).shape)
+    # import io
+    # print('jiashenb', (np.fromstring(io.BytesIO().getvalue(), dtype=np.uint8)).shape)
     return im
 
 
