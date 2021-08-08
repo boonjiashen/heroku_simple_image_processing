@@ -4,12 +4,15 @@ import os
 # will be used to redirect the user once the upload is done
 # and send_from_directory will help us to send/show on the
 # browser the file that the user just uploaded
+import tempfile
+
 import numpy as np
 import werkzeug
 from flask import Flask, render_template, request, redirect, url_for, send_from_directory
 from werkzeug.utils import secure_filename
 import matplotlib.pyplot
 import Mosaicker
+import uuid
 
 # Initialize the Flask application
 app = Flask(__name__)
@@ -40,12 +43,16 @@ def index():
     return render_template('index.html')
 
 
-def file_to_numpy_image(file: werkzeug.datastructures.FileStorage):
-    filename = '/tmp/tmp_file'
-    file.save(filename)
-    im = matplotlib.pyplot.imread(filename)
+def generate_uuid() -> str:
+    return str(uuid.uuid4())
 
-    return im
+
+def file_to_numpy_image(file: werkzeug.datastructures.FileStorage):
+    with tempfile.NamedTemporaryFile() as fp:
+        file.save(fp.name)
+        im = matplotlib.pyplot.imread(fp.name)
+
+        return im
 
 
 # Route that will process the file upload
@@ -53,24 +60,28 @@ def file_to_numpy_image(file: werkzeug.datastructures.FileStorage):
 def upload():
     # Get the name of the uploaded file
     file = request.files['file']
+
     # Check if the file is one of the allowed types/extensions
-    if file and allowed_file(file.filename):
-        # Make the filename safe, remove unsupported chars
-        filename = secure_filename(file.filename)
+    if not file or not allowed_file(file.filename):
+        return
 
-        # Convert to numpy image
-        im = file_to_numpy_image(file)
+    # Make the filename safe, remove unsupported chars
+    filename = secure_filename(file.filename)
 
-        # Save flipped image in upload folder
-        #im = numpy.fliplr(im)
-        im = mosaicker.compute_mosaick(im)
-        fullpath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        matplotlib.pyplot.imsave(fullpath, im)
+    # Convert to numpy image
+    im = file_to_numpy_image(file)
 
-        # Redirect the user to the uploaded_file route, which
-        # will basicaly show on the browser the uploaded file
-        return redirect(url_for('uploaded_file',
-                                filename=filename))
+    # Save output image in upload folder
+    im = mosaicker.compute_mosaick(im)
+    _, ext = os.path.splitext(filename)
+    output_filename = generate_uuid() + ext
+    output_path = os.path.join(app.config['UPLOAD_FOLDER'], output_filename)
+    matplotlib.pyplot.imsave(output_path, im)
+
+    # Redirect the user to the uploaded_file route, which
+    # will basicaly show on the browser the uploaded file
+    return redirect(url_for('uploaded_file',
+                            filename=output_filename))
 
 
 # This route is expecting a parameter containing the name
