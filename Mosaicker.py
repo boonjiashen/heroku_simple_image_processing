@@ -109,7 +109,7 @@ def shrink_to_max_dim(input_image, max_dim):
 class AppMosaicker(Mosaicker):
     """Default Mosaicker for Flask app"""
 
-    def __init__(self, mat_filename, max_dim=500):
+    def __init__(self, mat_filename='static/data_batch_1', max_dim=500):
         """`max_size` of output image"""
 
         self.max_dim = max_dim  
