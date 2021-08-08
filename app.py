@@ -41,20 +41,10 @@ def index():
 
 
 def file_to_numpy_image(file: werkzeug.datastructures.FileStorage):
-    # print(type(file))
     filename = '/tmp/tmp_file'
     file.save(filename)
     im = matplotlib.pyplot.imread(filename)
 
-    # matplotlib.pyplot.imsave('/tmp/1', im[:, :, 0])
-    # matplotlib.pyplot.imsave('/tmp/2', im[:, :, 1])
-    # matplotlib.pyplot.imsave('/tmp/3', im[:, :, 2])
-    # matplotlib.pyplot.imsave('/tmp/4', im[:, :, 3])
-    # print('jiashenb', im.shape)
-    # print(file.read())
-    # print('jiashenb', (np.fromstring(file.read(), np.uint8)).shape)
-    # import io
-    # print('jiashenb', (np.fromstring(io.BytesIO().getvalue(), dtype=np.uint8)).shape)
     return im
 
 
